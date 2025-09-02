@@ -13,9 +13,9 @@ const CartItem = ({ onContinueShopping }) => {
         let total = 0;
 
         cart.forEach((item) => {
-        const quantity = item.quantity ?? 0;
-        const cost = parseFloat(item.cost.substring(1)) || 0; // strip "$"
-        total += quantity * cost;
+            const quantity = item.quantity ?? 0;
+            const cost = parseFloat(String(item.cost).replace(/[^0-9.]/g, "")) || 0;        
+            total += quantity * cost;
         });
 
         return total.toFixed(2);
@@ -51,7 +51,7 @@ const CartItem = ({ onContinueShopping }) => {
 
   // Calculate total cost based on quantity for an item
   const calculateTotalCost = (item) => {
-    const unit = parseFloat(item.cost.substring(1)) || 0;
+    const unit = parseFloat(String(item.cost).replace(/[^0-9.]/g, "")) || 0;
     return (unit * (item.quantity ?? 0)).toFixed(2);
   };
 
@@ -66,7 +66,13 @@ const CartItem = ({ onContinueShopping }) => {
               <div className="cart-item-name">{item.name}</div>
               <div className="cart-item-cost">{item.cost}</div>
               <div className="cart-item-quantity">
-                <button className="cart-item-button cart-item-button-dec" onClick={() => handleDecrement(item)}>-</button>
+                <button
+                    className="cart-item-button cart-item-button-dec"
+                    onClick={() => handleDecrement(item)}
+                    disabled={item.quantity <= 1}
+                    >
+                    -
+                </button>
                 <span className="cart-item-quantity-value">{item.quantity}</span>
                 <button className="cart-item-button cart-item-button-inc" onClick={() => handleIncrement(item)}>+</button>
               </div>
@@ -80,7 +86,7 @@ const CartItem = ({ onContinueShopping }) => {
       <div className="continue_shopping_btn">
         <button className="get-started-button" onClick={(e) => handleContinueShopping(e)}>Continue Shopping</button>
         <br />
-        <button className="get-started-button1" onClick={onContinueShopping}>
+        <button className="get-started-button1" onClick={handleCheckoutShopping}>
             Checkout
         </button>
       </div>
